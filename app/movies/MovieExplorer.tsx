@@ -10,10 +10,12 @@ const API_KEY = process.env.NEXT_PUBLIC_OMDB_API_KEY ?? ''
 interface Props {
   // Lista de populares que ya viene renderizada desde el servidor (SSR)
   popular: MovieDetail[]
+  initialQuery: string
+  initialSelectedId: string | null
 }
 
-export default function MovieExplorer({ popular }: Props) {
-  const [query, setQuery] = useState('')
+export default function MovieExplorer({ popular, initialQuery, initialSelectedId }: Props) {
+  const [query, setQuery] = useState(initialQuery)
   const [type, setType] = useState('')
   const [year, setYear] = useState('')
   const [results, setResults] = useState<MovieSummary[]>([])
@@ -21,7 +23,7 @@ export default function MovieExplorer({ popular }: Props) {
   const [page, setPage] = useState(1)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
-  const [selectedId, setSelectedId] = useState<string | null>(null)
+  const [selectedId, setSelectedId] = useState<string | null>(initialSelectedId)
 
   // Búsqueda en tiempo real: espera 500 ms después de la última tecla (debounce)
   useEffect(() => {

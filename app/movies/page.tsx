@@ -35,8 +35,13 @@ export const metadata = {
   description: 'Películas populares (SSR) y búsqueda en tiempo real (CSR) con la API de OMDb',
 }
 
-export default async function MoviesPage() {
-  const popular = await getPopularMovies()
+interface PageProps {
+  // Permite compartir una búsqueda o un detalle: /movies?q=marvel&id=tt4154664
+  searchParams: Promise<{ q?: string; id?: string }>
+}
+
+export default async function MoviesPage({ searchParams }: PageProps) {
+  const [popular, { q, id }] = await Promise.all([getPopularMovies(), searchParams])
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-900 p-6 md:p-10">
@@ -50,7 +55,7 @@ export default async function MoviesPage() {
           </p>
         </header>
 
-        <MovieExplorer popular={popular} />
+        <MovieExplorer popular={popular} initialQuery={q ?? ''} initialSelectedId={id ?? null} />
 
         <footer className="mt-12 text-center text-sm text-slate-500">
           Laboratorio 09 · Next.js · CSR y SSR
